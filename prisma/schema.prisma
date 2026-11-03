@@ -1,0 +1,33 @@
+generator postgresqlDBClient {
+  provider        = "prisma-client-js"
+  output          = "../node_modules/@prisma/client-postgres"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [vector]
+}
+
+/// 专转本招生计划表（集成 pgvector 向量检索）
+model EnrollmentPlan {
+  id          Int                    @id @default(autoincrement())
+  category    String
+  schoolCode  String
+  schoolName  String
+  majorCode   String
+  majorName   String
+  planCount   Int
+  tuition     Int
+  language    String
+  requirement String?
+  remark      String?
+  status      Int                    @default(1)
+  embedding   Unsupported("vector")?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([schoolName, majorName])
+  @@index([status])
+  @@map("enrollment_plans")
+}

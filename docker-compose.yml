@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # 1. postgres 数据库服务
+  # ==========================================
+  postgres:
+    # 关键：更换为官方自带 pgvector 扩展的专用镜像（基于 PostgreSQL 15 稳定版）
+    image: pgvector/pgvector:0.5.0-pg15
+    container_name: qa-postgres
+    restart: always
+    # ports:
+    #   - '5432:5432' # 如果不需要在外网用 DBeaver/Navicat 直连，可以注释掉这行
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # 从 .env.production 读取密码
+      POSTGRES_DB: ${DB_NAME} # 从 .env.production 读取数据库名
+      POSTGRES_USER: postgres # 默认超级用户名
+    volumes:
+      - pg_data:/var/lib/postgresql/data # 确保数据持久化，不随容器重启丢失
+    networks:
+      - qa-network
+
+  # ==========================================
+  # nest 后端应用服务
+  # ==========================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: intelligent-qa-app
+    restart: always
+    ports:
+      - '${PORT}:${PORT}'
+    depends_on:
+      - postgres
+    # 🌟 核心补全：加载生产环境配置文件
+    env_file:
+      - .env.production
+    # volumes:
+    #   # 将上传目录持久化挂载到宿主机
+    #   - ./uploads:/universal-admin-koa-app/uploads
+    environment:
+      - NODE_ENV=production
+    networks:
+      - qa-network
+
+  # ==========================================
+  # 4. Nginx Web 前端服务
+  # ==========================================
+  web:
+    image: nginx:alpine
+    container_name: intelligent-qa-web
+    restart: always
+    ports:
+      - '8003:80' # 暴露 8003 端口供浏览器访问
+    volumes:
+      # 🌟 宿主机上的完整绝对路径
+      - /ha-project/aiQA/fontend/dist:/usr/share/nginx/html
+    depends_on:
+      - app
+    networks:
+      - qa-network
+# 定义全局持久化数据卷
+volumes:
+  pg_data:
+
+# 定义内部私有网络
+networks:
+  qa-network:
+    driver: bridge
