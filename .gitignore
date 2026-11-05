@@ -20,9 +20,9 @@ lerna-debug.log*
 # OS
 .DS_Store
 
-.agents
-.claude
-.windsurf
+# .agents
+# .claude
+# .windsurf
 
 # Tests
 /coverage
@@ -69,7 +69,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 tsconfig.build.tsbuildinfo
 
 uploads
-.vscode/*
+# .vscode/*
 # static
 test/*
 *.sql
