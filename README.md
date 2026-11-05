@@ -1,6 +1,6 @@
 # intelligent-qa
 
-Intelligent Question Answering（智能问答）
+Intelligent Question Answering（智能问答后端项目）。配套前端项目：[智能问答系统前端](https://github.com/huanganfree/intelligent-qa-frontend)
 
 ## 图示（部分）
 
