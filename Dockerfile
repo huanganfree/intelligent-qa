@@ -40,7 +40,7 @@ RUN npx prisma generate
 # 4. 复制业务代码：搬入你写好的 JS 文件
 # ==========================================
 # 复制打包好的 dist 目录到 /intelligent-qa/dist
-COPY dist ./dist
+# COPY dist ./dist
 
 
 # 如果上传文件夹仅用于存放初始化静态资源，保留此行；

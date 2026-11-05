@@ -70,6 +70,6 @@ tsconfig.build.tsbuildinfo
 
 uploads
 .vscode/*
-static
+# static
 test/*
 *.sql
