@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-// 1. 定义源路径与目标路径
+// 定义源路径与目标路径
 const rootDir = __dirname;
 const releaseDir = path.join(rootDir, 'release');
 
-// 2. 🔴 声明除了 dist 外，必须一并带走的配置文件清单
+// 声明除了 dist 外，必须一并带走的配置文件清单
 const requiredFiles = [
   'package.json',
   '.env.production',
@@ -13,6 +13,8 @@ const requiredFiles = [
   'Dockerfile',
   'docker-compose.yml',
   'prisma/schema.prisma', // 如果使用了 Prisma
+  'prisma.config.ts', // 如果使用了 Prisma 配置文件
+  'enrollment_plans.sql',
 ];
 
 // 辅助函数：递归复制文件夹

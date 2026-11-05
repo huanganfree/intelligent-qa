@@ -21,11 +21,27 @@ RUN npm config set registry https://registry.npmmirror.com/ \
 # 利用 Docker 缓存：package.json 没变时，这步瞬间完成
 RUN npm install --production
 
+COPY prisma.config.ts ./
+
+# 复制 Prisma Schema
+COPY prisma ./prisma
+
+RUN apk add --no-cache openssl ca-certificates
+
+# 使用 ENV 指令全局声明，Prisma 能够完美识别
+ENV PRISMA_ENGINES_MIRROR=https://npmmirror.com/mirrors/prisma/
+
+ENV DATABASE_URL_POSTGRES=postgres://postgres:rootHA@@localhost:5432/kb
+
+# 生成 Prisma Client
+RUN npx prisma generate
+
 # ==========================================
 # 4. 复制业务代码：搬入你写好的 JS 文件
 # ==========================================
 # 复制打包好的 dist 目录到 /intelligent-qa/dist
 COPY dist ./dist
+
 
 # 如果上传文件夹仅用于存放初始化静态资源，保留此行；
 # 如果是存放用户动态上传文件的目录，建议删除此行，改用 docker run -v 动态挂载
@@ -34,7 +50,7 @@ COPY dist ./dist
 # 创建空 uploads 目录供宿主机挂载，防止权限报错
 # RUN mkdir -p uploads
 
-COPY README.md ./
+# COPY README.md ./
 
 # ==========================================
 # 5. 暴露端口与启动

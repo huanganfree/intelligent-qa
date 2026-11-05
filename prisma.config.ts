@@ -3,12 +3,11 @@
 import { config } from 'dotenv';
 import 'dotenv/config';
 import { resolve } from 'path';
-import { defineConfig } from 'prisma/config';
+import { defineConfig, env } from 'prisma/config';
 
-const env = process.env.NODE_ENV || 'development';
-
+// const env = process.env.NODE_ENV || 'development';
 // 根据环境动态加载对应的 .env 文件（如 .env.development, .env.production）
-config({ path: resolve(process.cwd(), `.env.${env}`) });
+// config({ path: resolve(process.cwd(), `.env.${env}`) });
 
 console.log('当前加载环境:', env);
 
@@ -18,6 +17,6 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    url: process.env['DATABASE_URL_POSTGRES'] || '',
+    url: env('DATABASE_URL_POSTGRES'),
   },
 });
